@@ -11,7 +11,7 @@ class ExperienceLog extends Model
         'user_id',
         'character_id',
         'source',
-        'discipline',
+        'description',
         'experience',
         'strength_change',
         'intelligence_change',
