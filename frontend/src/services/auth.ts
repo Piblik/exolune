@@ -37,34 +37,27 @@ export interface LoginData {
 
 export const authService = {
   async register(data: RegisterData): Promise<User> {
-    await api.get('/sanctum/csrf-cookie');
+    await api.get('/sanctum/csrf-cookie')
 
-    const response = await api.post<AuthResponse>(
-      '/api/register',
-      data
-    );
+    const response = await api.post<AuthResponse>('/api/register', data)
 
-    return response.data.user;
+    return response.data.user
   },
 
   async login(data: LoginData): Promise<User> {
-    await api.get('/sanctum/csrf-cookie');
+    await api.get('/sanctum/csrf-cookie')
 
-    const response = await api.post<AuthResponse>(
-      '/api/login',
-      data
-    );
+    const response = await api.post<AuthResponse>('/api/login', data)
 
-    return response.data.user;
+    return response.data.user
   },
 
   async getUser(): Promise<User> {
-    const response = await api.get<User>('/api/user');
-
-    return response.data;
+    const response = await api.get<AuthResponse>('/api/user')
+    return response.data.user
   },
 
   async logout(): Promise<void> {
-    await api.post('/api/logout');
+    await api.post('/api/logout')
   },
-};
+}
