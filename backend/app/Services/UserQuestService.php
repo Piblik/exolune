@@ -10,7 +10,8 @@ use Illuminate\Validation\ValidationException;
 class UserQuestService
 {
     public function __construct(
-        private CharacterProgressService $progressService
+        private CharacterProgressService $progressService,
+        private AchievementService $achievementService
     ) {
     }
 
@@ -62,6 +63,8 @@ class UserQuestService
                 'status' => 'completed',
                 'completed_at' => now(),
             ]);
+
+            $this->achievementService->checkAndUnlock($userId);
 
             return $userQuest->fresh();
         });

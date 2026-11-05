@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { questService, type Quest, type UserQuest } from '../services/quests'
+import { useAuthStore } from '../stores/auth'
 
+const authStore = useAuthStore()
 const quests = ref<Quest[]>([])
 const myQuests = ref<UserQuest[]>([])
 const isLoading = ref(true)
@@ -71,6 +73,12 @@ async function completeQuest(userQuestId: number) {
 
     if (index !== -1) {
       myQuests.value[index] = updatedQuest
+    }
+
+    try {
+      await authStore.fetchUser()
+    } catch {
+      error.value = 'Квест виконано, але не вдалося оновити дані персонажа.'
     }
   } catch {
     error.value = 'Не вдалося завершити квест.'

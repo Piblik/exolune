@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
+import HistoryView from '../views/HistoryView.vue'
+import AchievementsView from '../views/AchievementsView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,7 +34,19 @@ const router = createRouter({
       path: '/quests',
       name: 'quests',
       component: ()=> import('../views/QuestView.vue'),
-      meta: { requires: true },
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/history',
+      name: 'history',
+      component: HistoryView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/achievements',
+      name: 'achievements',
+      component: AchievementsView,
+      meta: { requiresAuth: true },
     },
   ],
 })

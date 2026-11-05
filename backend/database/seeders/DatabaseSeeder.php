@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             QuestSeeder::class,
+            AchievementSeeder::class,
         ]);
     }
 }

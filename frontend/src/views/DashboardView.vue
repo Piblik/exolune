@@ -9,6 +9,18 @@ const authStore = useAuthStore()
 const user = computed(() => authStore.user)
 const character = computed(() => user.value?.character)
 
+const requiredExperience = computed(() => {
+  if (!character.value) return 0
+
+  return Math.ceil(100 * Math.pow(character.value.level, 1.5))
+})
+
+const experienceProgress = computed(() => {
+  if (!character.value || requiredExperience.value === 0) return 0
+
+  return Math.min(100, (character.value.experience / requiredExperience.value) * 100)
+})
+
 async function handleLogout() {
   try {
     await authStore.logout()
@@ -49,11 +61,16 @@ async function handleLogout() {
         <div class="experience">
           <div class="experience-label">
             <span>Досвід</span>
-            <span>{{ character.experience }} XP</span>
+            <span>
+              {{ character.experience }} / {{ requiredExperience }} XP
+            </span>
           </div>
 
           <div class="progress-bar">
-            <div class="progress-fill"></div>
+            <div
+              class="progress-fill"
+              :style="{ width: `${experienceProgress}%` }"
+            ></div>
           </div>
 
           <small>Поточний досвід персонажа</small>
@@ -204,6 +221,8 @@ async function handleLogout() {
   width: 0%;
   height: 100%;
   background: #a78bfa;
+  border-radius: 10px;
+  transition: width 0.4s ease;
 }
 
 .experience small {

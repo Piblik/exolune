@@ -9,6 +9,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\ExperienceLog;
+use App\Models\UserAchievement;
 
 class User extends Authenticatable
 {
@@ -57,5 +59,15 @@ class User extends Authenticatable
     public function userQuests(): HasMany
     {
         return $this->hasMany(UserQuest::class);
+    }
+
+    public function experienceLogs(): HasMany
+    {
+        return $this->hasMany(ExperienceLog::class);
+    }
+
+    public function achievements(): HasMany
+    {
+        return $this->hasMany(UserAchievement::class);
     }
 }
