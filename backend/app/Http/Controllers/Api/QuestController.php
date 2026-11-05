@@ -12,14 +12,14 @@ class QuestController extends Controller
 {
     public function index(): JsonResponse
     {
-        $quest = Quest::query()
+        $quests = Quest::query()
             ->where('is_active', true)
             ->orderBy('difficulty')
             ->get();
 
         return response()->json([
             'success' => true,
-            'data' => $quest,
+            'quests' => $quests,
         ]);
     }
 
@@ -27,9 +27,13 @@ class QuestController extends Controller
         Request $request,
         UserQuestService $userQuestService
     ): JsonResponse {
+        $data = $request->validate([
+            'quest_id' => ['required', 'integer', 'exists:quests,id'],
+        ]);
+
         $userQuest = $userQuestService->accept(
             $request->user()->id,
-            (int) $request->input('quest_id')
+            $data['quest_id']
         );
 
         return response()->json([
@@ -43,7 +47,7 @@ class QuestController extends Controller
         Request $request,
         UserQuestService $userQuestService,
         int $id
-    ): JsonResponse{
+    ): JsonResponse {
         $userQuest = $userQuestService->complete(
             $request->user()->id,
             $id
@@ -56,4 +60,17 @@ class QuestController extends Controller
         ]);
     }
 
+    public function myQuests(Request $request): JsonResponse
+    {
+        $userQuests = $request->user()
+            ->userQuests()
+            ->with('quest')
+            ->latest()
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $userQuests,
+        ]);
+    }
 }

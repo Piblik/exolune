@@ -16,9 +16,10 @@ Route::get('/test', function () {
 
 Route::get('/quests', [QuestController::class, 'index']);
 
-Route::middleware('auth::sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::post('/quests/accept', [QuestController::class, 'accept']);
     Route::post('quests/{id}/complete', [QuestController::class, 'complete']);
+    Route::get('/my-quests', [QuestController::class, 'myQuests']);
 });
 
 

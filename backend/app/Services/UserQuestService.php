@@ -11,12 +11,13 @@ class UserQuestService
 {
     public function __construct(
         private CharacterProgressService $progressService
-    ){
+    ) {
     }
 
-    public function accept(int $userId, int $questId): UserQuest{
+    public function accept(int $userId, int $questId): UserQuest
+    {
         return DB::transaction(function () use ($userId, $questId) {
-            $quest = Quest::quest()
+            $quest = Quest::query()
                 ->where('is_active', true)
                 ->findOrFail($questId);
 
@@ -28,20 +29,15 @@ class UserQuestService
         });
     }
 
-    public function complete(
-        int $userId,
-        int $userQuestId
-    ): UserQuest{
-        return DB::transaction(function () use (
-            $userId,
-            $userQuestId
-        ){
+    public function complete(int $userId, int $userQuestId): UserQuest
+    {
+        return DB::transaction(function () use ($userId, $userQuestId) {
             $userQuest = UserQuest::query()
                 ->where('user_id', $userId)
                 ->lockForUpdate()
                 ->findOrFail($userQuestId);
 
-            if ($userQuest->status !== 'active'){
+            if ($userQuest->status !== 'active') {
                 throw ValidationException::withMessages([
                     'quest' => 'Це завдання вже не можна завершити.',
                 ]);
@@ -49,11 +45,11 @@ class UserQuestService
 
             $quest = Quest::findOrFail($userQuest->quest_id);
 
-            $character = $this->progressService->award(
+            $this->progressService->award(
                 userId: $userId,
                 characterId: $userQuest->user->character->id,
                 experience: $quest->experience_reward,
-                statRewards:[
+                statRewards: [
                     'strength' => $quest->strength_reward,
                     'intelligence' => $quest->intelligence_reward,
                     'discipline' => $quest->discipline_reward,
@@ -61,8 +57,13 @@ class UserQuestService
                 source: 'quest',
                 description: $quest->title
             );
+
+            $userQuest->update([
+                'status' => 'completed',
+                'completed_at' => now(),
+            ]);
+
             return $userQuest->fresh();
         });
     }
-
 }
