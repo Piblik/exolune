@@ -6,6 +6,7 @@ import {
   type LoginData,
   type RegisterData,
 } from '../services/auth';
+import { profileService, type UpdateProfileData } from '../services/profile'
 
 interface ApiError {
   response?: {
@@ -80,6 +81,21 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  async function updateProfile(data: UpdateProfileData) {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      user.value = await profileService.updateProfile(data)
+    } catch (err: unknown) {
+      const apiError = err as ApiError
+      error.value = apiError.response?.data?.message ?? 'Помилка оновлення профілю'
+      throw err
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   return {
     user,
     isAuthenticated,
@@ -89,5 +105,6 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     fetchUser,
     logout,
+    updateProfile,
   };
 });

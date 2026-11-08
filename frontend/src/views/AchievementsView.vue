@@ -1,6 +1,18 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import {
+  Award,
+  Trophy,
+  Target,
+  Lock,
+  Check,
+  Gift,
+  ChevronLeft,
+  Dumbbell,
+  Brain,
+  Flame,
+} from 'lucide-vue-next'
+import {
   achievementService,
   type Achievement,
   type UserAchievement,
@@ -41,6 +53,18 @@ function getConditionText(achievement: Achievement) {
   return conditions[achievement.condition_type] ?? 'Особлива умова'
 }
 
+function getAchievementIcon(achievement: Achievement) {
+  const icons: Record<string, any> = {
+    quests_completed: Target,
+    level_reached: Trophy,
+    strength_reached: Dumbbell,
+    intelligence_reached: Brain,
+    discipline_reached: Flame,
+  }
+
+  return icons[achievement.condition_type] ?? Award
+}
+
 function getUnlockedDate(achievementId: number) {
   const item = myAchievements.value.find((item) => item.achievement_id === achievementId)
 
@@ -78,7 +102,10 @@ onMounted(loadAchievements)
         <p class="subtitle">Кожен виконаний квест наближає тебе до нових звершень.</p>
       </div>
 
-      <RouterLink to="/dashboard" class="back-link"> ← До персонажа </RouterLink>
+      <RouterLink to="/dashboard" class="back-link">
+        <ChevronLeft :size="16" />
+        До персонажа
+      </RouterLink>
     </header>
 
     <section class="progress-card">
@@ -115,7 +142,7 @@ onMounted(loadAchievements)
         }"
       >
         <div class="achievement-icon">
-          {{ achievement.icon || '🏅' }}
+          <component :is="getAchievementIcon(achievement)" :size="30" />
         </div>
 
         <div class="achievement-content">
@@ -126,7 +153,15 @@ onMounted(loadAchievements)
               'status-locked': !unlockedIds.has(achievement.id),
             }"
           >
-            {{ unlockedIds.has(achievement.id) ? 'Відкрито' : 'Заблоковано' }}
+            <template v-if="unlockedIds.has(achievement.id)">
+              <Check :size="13" />
+              Відкрито
+            </template>
+
+            <template v-else>
+              <Lock :size="12" />
+              Заблоковано
+            </template>
           </span>
 
           <h2>{{ achievement.title }}</h2>
@@ -137,7 +172,10 @@ onMounted(loadAchievements)
           </div>
 
           <div class="achievement-footer">
-            <span>🎁 +{{ achievement.experience_reward }} XP</span>
+            <span class="xp-reward">
+              <Gift :size="14" />
+              +{{ achievement.experience_reward }} XP
+            </span>
 
             <span v-if="unlockedIds.has(achievement.id)">
               {{ getUnlockedDate(achievement.id) }}
@@ -190,10 +228,12 @@ h1 {
 .progress-card {
   max-width: 1000px;
   padding: 24px;
-  margin-bottom: 32px;
+  margin: 0 auto 32px;
   background: #1b172b;
   border: 1px solid #342b4c;
   border-radius: 16px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .progress-info {
@@ -239,9 +279,11 @@ h1 {
 
 .achievements-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
   gap: 20px;
+  width: 100%;
   max-width: 1200px;
+  margin: 0 auto;
 }
 
 .achievement-card {
@@ -340,5 +382,55 @@ h1 {
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s ease;
+}
+
+.back-link:hover {
+  color: #a78bfa;
+}
+
+.achievement-icon svg {
+  stroke-width: 1.8;
+  color: #c4b5fd;
+}
+
+.achievement-card.unlocked .achievement-icon {
+  background: #30234b;
+  box-shadow: 0 0 20px #8b5cf622;
+}
+
+.achievement-card.unlocked .achievement-icon svg {
+  color: #c4a8ff;
+}
+
+.achievement-card.locked .achievement-icon svg {
+  color: #858096;
+}
+
+.achievement-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.achievement-status svg {
+  flex-shrink: 0;
+}
+
+.xp-reward {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.xp-reward svg {
+  color: #c4a8ff;
+  stroke-width: 1.8;
 }
 </style>

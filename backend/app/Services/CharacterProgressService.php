@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\Character;
 use App\Models\ExperienceLog;
+use App\Models\User;
+use App\Notifications\GameNotification;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
@@ -28,9 +30,9 @@ class CharacterProgressService
             );
         }
 
-        $strength = $statRewrds['strength'] ?? 0;
-        $intelligence = $statRewrds['intelligence'] ?? 0;
-        $discipline = $statRewrds['discipline'] ?? 0;
+        $strength = $statRewards['strength'] ?? 0;
+        $intelligence = $statRewards['intelligence'] ?? 0;
+        $discipline = $statRewards['discipline'] ?? 0;
 
         if (
             $strength < 0 ||
@@ -56,6 +58,8 @@ class CharacterProgressService
                 ->where('user_id', $userId)
                 ->lockForUpdate()
                 ->findOrFail($characterId);
+
+            $previousLevel = $character->level;
 
             $character->experience += $experience;
 
@@ -87,6 +91,38 @@ class CharacterProgressService
                 'intelligence_change' => $intelligence,
                 'discipline_change' => $discipline,
             ]);
+
+            $user = User::findOrFail($userId);
+
+            if (
+                $experience > 0 &&
+                !in_array($source, ['quest', 'achievement'], true)
+            ) {
+                $user->notify(new GameNotification(
+                    type: 'experience_gained',
+                    title: 'Отримано досвід!',
+                    message: "Ти отримав {$experience} XP за: {$description}.",
+                    icon: 'zap',
+                    data: [
+                        'experience' => $experience,
+                        'source' => $source,
+                        'description' => $description,
+                    ]
+                ));
+            }
+
+            if ($character->level > $previousLevel) {
+                $user->notify(new GameNotification(
+                    type: 'level_up',
+                    title: 'Новий рівень!',
+                    message: "Вітаємо! Твій персонаж досяг {$character->level} рівня!",
+                    icon: 'trending-up',
+                    data: [
+                        'previous_level' => $previousLevel,
+                        'new_level' => $character->level,
+                    ]
+                ));
+            }
 
             return $character;
         });

@@ -16,7 +16,7 @@ export interface UserAchievement {
   user_id: number
   achievement_id: number
   unlocked_at: string
-  achievements: Achievement
+  achievement: Achievement
 }
 
 interface AchievementsResponse {

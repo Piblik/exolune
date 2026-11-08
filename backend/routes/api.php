@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\QuestController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ExperienceLogController;
 use App\Http\Controllers\Api\AchievementController;
+use App\Http\Controllers\Api\NotificationController;
 
 Route::get('/test', function () {
     return response()->json([
@@ -31,4 +32,15 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/achievements', [AchievementController::class, 'index']);
     Route::get('/my-achievements', [AchievementController::class, 'myAchievements']);
+
+    Route::post('/profile', [AuthController::class, 'updateProfile']);
+
+    Route::put('/change-password', [AuthController::class, 'changePassword']);
+
+    Route::delete('/profile/avatar', [AuthController::class, 'deleteAvatar']);
+
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
 });

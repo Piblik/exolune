@@ -31,9 +31,21 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/character',
+      name: 'character',
+      component: () => import('../views/CharacterView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/quests',
       name: 'quests',
-      component: ()=> import('../views/QuestView.vue'),
+      component: () => import('../views/QuestView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/statistics',
+      name: 'statistics',
+      component: () => import('../views/StatisticsView.vue'),
       meta: { requiresAuth: true },
     },
     {
@@ -46,6 +58,12 @@ const router = createRouter({
       path: '/achievements',
       name: 'achievements',
       component: AchievementsView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: () => import('../views/SettingsView.vue'),
       meta: { requiresAuth: true },
     },
   ],

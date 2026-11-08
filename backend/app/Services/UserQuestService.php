@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Quest;
 use App\Models\UserQuest;
+use App\Notifications\GameNotification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -65,6 +66,23 @@ class UserQuestService
             ]);
 
             $this->achievementService->checkAndUnlock($userId);
+
+            $userQuest->user->notify(new GameNotification(
+                type: 'quest_completed',
+                title: 'Квест виконано!',
+                message: "Ти успішно завершив квест «{$quest->title}» та отримав {$quest->experience_reward} XP.",
+                icon: 'trophy',
+                data: [
+                    'quest_id' => $quest->id,
+                    'user_quest_id' => $userQuest->id,
+                    'experience' => $quest->experience_reward,
+                    'stat_rewards' => [
+                        'strength' => $quest->strength_reward,
+                        'intelligence' => $quest->intelligence_reward,
+                        'discipline' => $quest->discipline_reward,
+                    ],
+                ]
+            ));
 
             return $userQuest->fresh();
         });

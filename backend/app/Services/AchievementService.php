@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Achievement;
 use App\Models\UserAchievement;
 use App\Models\User;
+use App\Notifications\GameNotification;
 use Illuminate\Support\Facades\DB;
 
 class AchievementService
@@ -64,7 +65,21 @@ class AchievementService
                     );
                 }
 
-                $unlocked[] = $userAchievement->load('achievement');
+                $unlockedAchievement = $userAchievement->load('achievement');
+
+                $user->notify(new GameNotification(
+                    type: 'achievement_unlocked',
+                    title: 'Нове досягнення!',
+                    message: "Ти отримав досягнення «{$achievement->title}»!",
+                    icon: 'award',
+                    data: [
+                        'achievement_id' => $achievement->id,
+                        'title' => $achievement->title,
+                        'experience_reward' => $achievement->experience_reward,
+                    ]
+                ));
+
+                $unlocked[] = $unlockedAchievement;
             }
 
             return $unlocked;
