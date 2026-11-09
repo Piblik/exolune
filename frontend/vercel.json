@@ -7,6 +7,10 @@
     {
       "source": "/sanctum/:path*",
       "destination": "https://exolune-production.up.railway.app/sanctum/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
