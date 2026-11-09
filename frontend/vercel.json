@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://exolune-production.up.railway.app/api/:path*"
+    },
+    {
+      "source": "/sanctum/:path*",
+      "destination": "https://exolune-production.up.railway.app/sanctum/:path*"
+    }
+  ]
+}
