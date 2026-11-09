@@ -19,15 +19,36 @@ const difficultyLabels: Record<Quest['difficulty'], string> = {
 
 const activeQuestIds = computed(
   () =>
-    new Set(myQuests.value.filter((item) => item.status === 'active').map((item) => item.quest_id)),
+    new Set(
+      myQuests.value
+        .filter(
+          (item) => item.status === 'active' && (!item.quest?.is_daily || isToday(item.daily_date)),
+        )
+        .map((item) => item.quest_id),
+    ),
 )
 
 const completedQuestIds = computed(
   () =>
     new Set(
-      myQuests.value.filter((item) => item.status === 'completed').map((item) => item.quest_id),
+      myQuests.value
+        .filter(
+          (item) =>
+            item.status === 'completed' && (!item.quest?.is_daily || isToday(item.daily_date)),
+        )
+        .map((item) => item.quest_id),
     ),
 )
+
+const displayedQuests = computed(() => {
+  const assignedDailyIds = new Set(
+    myQuests.value
+      .filter((item) => item.quest.is_daily && isToday(item.daily_date))
+      .map((item) => item.quest_id),
+  )
+
+  return quests.value.filter((quest) => !quest.is_daily || assignedDailyIds.has(quest.id))
+})
 
 async function loadData() {
   isLoading.value = true
@@ -41,6 +62,10 @@ async function loadData() {
 
     quests.value = allQuests
     myQuests.value = userQuests
+
+    console.log('ALL QUESTS:', allQuests)
+    console.log('MY QUESTS:', userQuests)
+    console.log('DISPLAYED QUESTS:', displayedQuests.value)
   } catch {
     error.value = 'Не вдалося завантажити квести.'
   } finally {
@@ -75,12 +100,11 @@ async function completeQuest(userQuestId: number) {
       myQuests.value[index] = updatedQuest
     }
 
-    try {
-      await authStore.fetchUser()
-    } catch {
+    void authStore.fetchUser().catch(() => {
       error.value = 'Квест виконано, але не вдалося оновити дані персонажа.'
-    }
-  } catch {
+    })
+  } catch (err) {
+    console.error('Помилка завершення квесту:', err)
     error.value = 'Не вдалося завершити квест.'
   } finally {
     processingId.value = null
@@ -88,7 +112,37 @@ async function completeQuest(userQuestId: number) {
 }
 
 function getActiveUserQuest(questId: number) {
-  return myQuests.value.find((item) => item.quest_id === questId && item.status === 'active')
+  const quest = quests.value.find((item) => item.id === questId)
+
+  return myQuests.value.find(
+    (item) =>
+      item.quest_id === questId &&
+      item.status === 'active' &&
+      (!quest?.is_daily || isToday(item.daily_date)),
+  )
+}
+
+function getTodayDate(): string {
+  const date = new Date()
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+
+  return `${year}-${month}-${day}`
+}
+
+function isToday(date: string | null): boolean {
+  if (!date) return false
+
+  const parsedDate = new Date(date)
+
+  const year = parsedDate.getFullYear()
+  const month = String(parsedDate.getMonth() + 1).padStart(2, '0')
+  const day = String(parsedDate.getDate()).padStart(2, '0')
+
+  const localDate = `${year}-${month}-${day}`
+
+  return localDate === getTodayDate()
 }
 
 onMounted(loadData)
@@ -110,12 +164,17 @@ onMounted(loadData)
 
     <div v-if="isLoading" class="message">Завантаження квестів...</div>
 
-    <div v-else-if="quests.length === 0" class="message">Поки що доступних квестів немає.</div>
+    <div v-else-if="displayedQuests.length === 0" class="message">
+      Поки що доступних квестів немає.
+    </div>
 
     <section v-else class="quests-grid">
-      <article v-for="quest in quests" :key="quest.id" class="quest-card">
+      <article v-for="quest in displayedQuests" :key="quest.id" class="quest-card">
         <div class="quest-top">
-          <span class="category">{{ quest.category }}</span>
+          <div class="quest-labels">
+            <span v-if="quest.is_daily" class="daily-badge">DAILY</span>
+            <span class="category">{{ quest.category }}</span>
+          </div>
           <span class="difficulty" :class="quest.difficulty">
             {{ difficultyLabels[quest.difficulty] }}
           </span>
@@ -345,5 +404,23 @@ h1 {
     align-items: flex-start;
     flex-direction: column;
   }
+}
+
+.quest-labels {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.daily-badge {
+  padding: 6px 10px;
+  border: 1px solid #6845a8;
+  border-radius: 20px;
+  background: #302047;
+  color: #c4a8ff;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 1px;
 }
 </style>

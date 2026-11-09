@@ -12,7 +12,8 @@ class UserQuestService
 {
     public function __construct(
         private CharacterProgressService $progressService,
-        private AchievementService $achievementService
+        private AchievementService $achievementService,
+        private StreakService $streakService
     ) {
     }
 
@@ -23,9 +24,28 @@ class UserQuestService
                 ->where('is_active', true)
                 ->findOrFail($questId);
 
+            $dailyDate = $quest->is_daily
+                ? today()->toDateString()
+                : null;
+
+            if ($quest->is_daily) {
+                $alreadyAccepted = UserQuest::query()
+                    ->where('user_id', $userId)
+                    ->where('quest_id', $questId)
+                    ->whereDate('daily_date', $dailyDate)
+                    ->exists();
+
+                if ($alreadyAccepted) {
+                    throw ValidationException::withMessages([
+                        'quest' => 'Ти вже приймав цей Daily Quest сьогодні.',
+                    ]);
+                }
+            }
+
             return UserQuest::create([
                 'user_id' => $userId,
                 'quest_id' => $quest->id,
+                'daily_date' => $dailyDate,
                 'status' => 'active',
             ]);
         });
@@ -47,6 +67,15 @@ class UserQuestService
 
             $quest = Quest::findOrFail($userQuest->quest_id);
 
+            if (
+                $quest->is_daily &&
+                $userQuest->daily_date?->toDateString() !== today()->toDateString()
+            ) {
+                throw ValidationException::withMessages([
+                    'quest' => 'Термін виконання цього Daily Quest минув.',
+                ]);
+            }
+
             $this->progressService->award(
                 userId: $userId,
                 characterId: $userQuest->user->character->id,
@@ -67,6 +96,8 @@ class UserQuestService
 
             $this->achievementService->checkAndUnlock($userId);
 
+            $this->streakService->update($userId);
+
             $userQuest->user->notify(new GameNotification(
                 type: 'quest_completed',
                 title: 'Квест виконано!',
@@ -86,5 +117,61 @@ class UserQuestService
 
             return $userQuest->fresh();
         });
+    }
+
+    public function assignDailyQuests(int $userId): void
+    {
+        DB::transaction(function () use ($userId) {
+            \App\Models\User::query()
+                ->whereKey($userId)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $this->expireOldDailyQuests($userId);
+
+            $todayQuests = UserQuest::query()
+                ->where('user_id', $userId)
+                ->whereDate('daily_date', today())
+                ->get();
+
+            $assignedCount = $todayQuests->count();
+
+            if ($assignedCount >= 3) {
+                return;
+            }
+
+            $remaining = 3 - $assignedCount;
+
+            $assignedIds = $todayQuests->pluck('quest_id')->toArray();
+
+            $dailyQuests = Quest::query()
+                ->where('is_daily', true)
+                ->where('is_active', true)
+                ->whereNotIn('id', $assignedIds)
+                ->inRandomOrder()
+                ->limit($remaining)
+                ->get();
+
+            foreach ($dailyQuests as $quest) {
+                UserQuest::create([
+                    'user_id' => $userId,
+                    'quest_id' => $quest->id,
+                    'daily_date' => today()->toDateString(),
+                    'status' => 'active',
+                ]);
+            }
+        });
+    }
+
+    public function expireOldDailyQuests(int $userId): void
+    {
+        UserQuest::query()
+            ->where('user_id', $userId)
+            ->whereNotNull('daily_date')
+            ->whereDate('daily_date', '<', today())
+            ->where('status', 'active')
+            ->update([
+                'status' => 'rejected',
+            ]);
     }
 }

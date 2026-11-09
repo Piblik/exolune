@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\ExperienceLog;
 use App\Models\UserAchievement;
+use App\Models\UserStreak;
 
 class User extends Authenticatable
 {
@@ -69,5 +70,10 @@ class User extends Authenticatable
     public function achievements(): HasMany
     {
         return $this->hasMany(UserAchievement::class);
+    }
+
+    public function streak(): HasOne
+    {
+        return $this->hasOne(UserStreak::class);
     }
 }

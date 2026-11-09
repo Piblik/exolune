@@ -53,6 +53,8 @@ class QuestController extends Controller
             $id
         );
 
+        $userQuest->load('quest');
+
         return response()->json([
             'success' => true,
             'message' => 'Завдання виконано!',
@@ -60,8 +62,14 @@ class QuestController extends Controller
         ]);
     }
 
-    public function myQuests(Request $request): JsonResponse
-    {
+    public function myQuests(
+        Request $request,
+        UserQuestService $userQuestService
+    ): JsonResponse {
+        $userQuestService->assignDailyQuests(
+            $request->user()->id
+        );
+
         $userQuests = $request->user()
             ->userQuests()
             ->with('quest')

@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { questService, type UserQuest } from '../services/quests'
 import { achievementService, type UserAchievement } from '../services/achievements'
+import { useStreakStore } from '../stores/streak'
 import api from '../services/api'
 import {
   LogOut,
@@ -39,6 +40,7 @@ interface HistoryResponse {
 
 const router = useRouter()
 const authStore = useAuthStore()
+const streakStore = useStreakStore()
 
 const user = computed(() => authStore.user)
 const character = computed(() => user.value?.character)
@@ -93,6 +95,7 @@ async function loadDashboard() {
       questService.getMyQuests(),
       achievementService.getMyAchievements(),
       api.get<HistoryResponse>('/api/experience-logs'),
+      streakStore.fetchStreak(),
     ])
 
     myQuests.value = quests
@@ -210,33 +213,46 @@ onMounted(loadDashboard)
       </section>
 
       <section class="stats-grid">
-        <article class="stat-card strength">
-          <div class="stat-icon">
-            <Swords :size="21" />
-          </div>
-          <div>
-            <span>Сила</span>
-            <strong>{{ character.strength }}</strong>
-          </div>
-        </article>
+        <div class="stats-left">
+          <article class="stat-card strength">
+            <div class="stat-icon">
+              <Swords :size="21" />
+            </div>
+            <div>
+              <span>Сила</span>
+              <strong>{{ character.strength }}</strong>
+            </div>
+          </article>
 
-        <article class="stat-card intelligence">
-          <div class="stat-icon">
-            <Brain :size="21" />
-          </div>
-          <div>
-            <span>Інтелект</span>
-            <strong>{{ character.intelligence }}</strong>
-          </div>
-        </article>
+          <article class="stat-card intelligence">
+            <div class="stat-icon">
+              <Brain :size="21" />
+            </div>
+            <div>
+              <span>Інтелект</span>
+              <strong>{{ character.intelligence }}</strong>
+            </div>
+          </article>
 
-        <article class="stat-card discipline">
+          <article class="stat-card discipline">
+            <div class="stat-icon">
+              <Flame :size="21" />
+            </div>
+            <div>
+              <span>Дисципліна</span>
+              <strong>{{ character.discipline }}</strong>
+            </div>
+          </article>
+        </div>
+
+        <article class="stat-card streak-stat">
           <div class="stat-icon">
             <Flame :size="21" />
           </div>
           <div>
-            <span>Дисципліна</span>
-            <strong>{{ character.discipline }}</strong>
+            <span>Серія активності</span>
+            <strong>{{ streakStore.streak.current_streak }} дн.</strong>
+            <small>Рекорд: {{ streakStore.streak.longest_streak }} дн.</small>
           </div>
         </article>
       </section>
@@ -267,7 +283,10 @@ onMounted(loadDashboard)
               </div>
 
               <div class="quest-info">
-                <strong>{{ item.quest.title }}</strong>
+                <strong>
+                  {{ item.quest.title }}
+                  <span v-if="item.quest.is_daily" class="daily-badge">DAILY</span>
+                </strong>
                 <small>{{ item.quest.description }}</small>
               </div>
 
@@ -317,6 +336,7 @@ onMounted(loadDashboard)
             <div v-for="item in activeQuests.slice(0, 3)" :key="item.id" class="active-quest">
               <Sparkles :size="14" />
               {{ item.quest.title }}
+              <span v-if="item.quest.is_daily" class="daily-badge">DAILY</span>
             </div>
           </div>
 
@@ -425,10 +445,40 @@ onMounted(loadDashboard)
   color: #fff;
 }
 
-.top-grid {
+.top-grid,
+.content-grid,
+.stats-grid {
   display: grid;
   grid-template-columns: minmax(0, 2.5fr) minmax(210px, 0.85fr);
   gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.top-grid {
+  margin-bottom: 12px;
+}
+
+.stats-grid {
+  margin-bottom: 12px;
+  align-items: stretch;
+}
+
+.content-grid {
+  margin-top: 0;
+}
+
+.stats-left {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  min-width: 0;
+}
+
+.streak-stat {
+  min-width: 0;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .character-card {
@@ -441,6 +491,7 @@ onMounted(loadDashboard)
   border: 1px solid #392b60;
   border-radius: 15px;
   background: radial-gradient(circle at 80% 50%, #302052 0%, #17152a 40%, #111525 100%);
+  box-sizing: border-box;
 }
 
 .character-details {
@@ -562,6 +613,7 @@ onMounted(loadDashboard)
   text-decoration: none;
 }
 
+/* Твоя пригода */
 .activity-card {
   display: flex;
   flex-direction: column;
@@ -570,6 +622,7 @@ onMounted(loadDashboard)
   border: 1px solid #343044;
   border-radius: 15px;
   background: radial-gradient(circle at 80% 0%, #29231f, #111522 55%);
+  box-sizing: border-box;
 }
 
 .streak-icon {
@@ -611,21 +664,21 @@ onMounted(loadDashboard)
   background: #e6a52e;
 }
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin: 12px 0;
-}
-
 .stat-card {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
+  min-height: 82px;
+  box-sizing: border-box;
   padding: 14px;
   border: 1px solid #252d41;
   border-radius: 12px;
   background: #101625;
+}
+
+.stat-card > div:last-child {
+  min-width: 0;
 }
 
 .stat-icon {
@@ -652,6 +705,18 @@ onMounted(loadDashboard)
   font-size: 19px;
 }
 
+.stat-card small {
+  display: block;
+  margin-top: 5px;
+  color: #929bb2;
+  font-size: 9px;
+}
+
+.strength .stat-icon {
+  background: #35202d;
+  color: #fb7185;
+}
+
 .intelligence .stat-icon {
   background: #112b30;
   color: #2dd4bf;
@@ -662,18 +727,19 @@ onMounted(loadDashboard)
   color: #34d399;
 }
 
-.content-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 2.5fr) minmax(210px, 0.85fr);
-  gap: 12px;
+.streak-stat .stat-icon {
+  background: #35291d;
+  color: #fbbf24;
 }
 
+/* Панелі */
 .panel {
   min-width: 0;
   padding: 18px;
   border: 1px solid #252d41;
   border-radius: 13px;
   background: #101625;
+  box-sizing: border-box;
 }
 
 .panel-header {
@@ -702,6 +768,7 @@ onMounted(loadDashboard)
   text-decoration: none;
 }
 
+/* Квести */
 .quest-progress {
   height: 4px;
   margin-bottom: 10px;
@@ -799,12 +866,16 @@ onMounted(loadDashboard)
   text-decoration: none;
 }
 
+/* Активні квести */
 .challenge-panel {
   display: flex;
   flex-direction: column;
 }
 
 .challenge-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: #c4a8ff;
   font-size: 24px;
 }
@@ -840,6 +911,11 @@ onMounted(loadDashboard)
   color: #a78bfa;
 }
 
+.active-quest svg {
+  flex-shrink: 0;
+  color: #a78bfa;
+}
+
 .challenge-link {
   margin-top: auto;
   padding-top: 22px;
@@ -848,6 +924,7 @@ onMounted(loadDashboard)
   text-decoration: none;
 }
 
+/* Досягнення та активність */
 .achievement-icon,
 .log-icon {
   display: flex;
@@ -892,6 +969,7 @@ onMounted(loadDashboard)
   text-decoration: none;
 }
 
+/* Завантаження та помилки */
 .loading,
 .error-message {
   padding: 60px 20px;
@@ -910,10 +988,75 @@ onMounted(loadDashboard)
   cursor: pointer;
 }
 
+/* Іконки та кнопки */
+.logout-button,
+.profile-link,
+.panel-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.stat-icon svg,
+.streak-icon svg,
+.challenge-icon svg,
+.achievement-icon svg,
+.log-icon svg {
+  stroke-width: 1.8;
+  flex-shrink: 0;
+}
+
+.logout-button svg,
+.profile-link svg,
+.panel-link svg {
+  flex-shrink: 0;
+}
+
+.streak-icon svg {
+  stroke-width: 2;
+}
+
+.achievement-icon svg,
+.log-icon svg {
+  color: #c4a8ff;
+}
+
+.quest-status svg {
+  stroke-width: 2;
+}
+
 @media (max-width: 900px) {
   .top-grid,
   .content-grid {
     grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-left {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .character-portrait {
+    right: 5%;
+  }
+}
+
+@media (max-width: 900px) {
+  .top-grid,
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-left {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .character-portrait {
@@ -926,7 +1069,7 @@ onMounted(loadDashboard)
     padding: 14px 10px 25px;
   }
 
-  .stats-grid {
+  .stats-left {
     grid-template-columns: 1fr;
   }
 
@@ -958,72 +1101,17 @@ onMounted(loadDashboard)
   }
 }
 
-.logout-button,
-.profile-link,
-.panel-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-}
-
-.stat-icon svg,
-.streak-icon svg,
-.challenge-icon svg,
-.achievement-icon svg,
-.log-icon svg {
-  stroke-width: 1.8;
-  flex-shrink: 0;
-}
-
-.logout-button svg,
-.profile-link svg,
-.panel-link svg {
-  flex-shrink: 0;
-}
-
-.strength .stat-icon {
-  background: #35202d;
-  color: #fb7185;
-}
-
-.intelligence .stat-icon {
-  background: #112b30;
-  color: #2dd4bf;
-}
-
-.discipline .stat-icon {
-  background: #12302c;
-  color: #34d399;
-}
-
-.streak-icon svg {
-  stroke-width: 2;
-}
-
-.challenge-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.active-quest svg {
-  flex-shrink: 0;
-  color: #a78bfa;
-}
-
-.achievement-icon svg,
-.log-icon svg {
+.daily-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 3px 6px;
+  border: 1px solid #6845a8;
+  border-radius: 5px;
+  background: #302047;
   color: #c4a8ff;
-}
-
-.quest-status {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.quest-status svg {
-  stroke-width: 2;
+  font-size: 8px;
+  font-weight: bold;
+  letter-spacing: 0.7px;
+  vertical-align: middle;
 }
 </style>

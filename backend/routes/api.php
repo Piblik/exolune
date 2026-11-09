@@ -1,11 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\QuestController;
+use App\Http\Controllers\Api\AchievementController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ExperienceLogController;
-use App\Http\Controllers\Api\AchievementController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\QuestController;
+use App\Http\Controllers\Api\StreakController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/test', function () {
     return response()->json([
@@ -43,4 +44,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
     Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
     Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
+
+    Route::get('/streak', [StreakController::class, 'index']);
 });

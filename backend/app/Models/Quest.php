@@ -17,6 +17,7 @@ class Quest extends Model
         'intelligence_reward',
         'discipline_reward',
         'is_active',
+        'is_daily',
     ];
 
     protected function casts():array
@@ -27,6 +28,7 @@ class Quest extends Model
             'intelligence_reward' => 'integer',
             'discipline_reward' => 'integer',
             'is_active' => 'boolean',
+            'is_daily' => 'boolean',
         ];
     }
 

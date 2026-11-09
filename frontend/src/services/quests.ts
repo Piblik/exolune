@@ -11,12 +11,14 @@ export interface Quest {
   intelligence_reward: number
   discipline_reward: number
   is_active: boolean
+  is_daily: boolean
 }
 
 export interface UserQuest {
   id: number
   user_id: number
   quest_id: number
+  daily_date: string | null
   status: 'active' | 'completed' | 'rejected'
   started_at: string
   completed_at: string | null

@@ -10,6 +10,7 @@ class UserQuest extends Model
     protected $fillable = [
         'user_id',
         'quest_id',
+        'daily_date',
         'status',
         'started_at',
         'completed_at',
@@ -18,6 +19,7 @@ class UserQuest extends Model
     protected function casts(): array
     {
         return [
+            'daily_date' => 'date',
             'started_at' => 'datetime',
             'completed_at' => 'datetime',
         ];
