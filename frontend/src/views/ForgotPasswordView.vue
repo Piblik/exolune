@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import api from '../services/api'
 
 const email = ref('')
 const isLoading = ref(false)
@@ -13,22 +14,11 @@ const submitForm = async () => {
   isLoading.value = true
 
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/forgot-password`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify({
-        email: email.value,
-      }),
+    const response = await api.post('/api/forgot-password', {
+      email: email.value,
     })
 
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new Error(data.message || 'Не вдалося надіслати запит.')
-    }
+    const data = response.data
 
     message.value = data.message
   } catch (err) {

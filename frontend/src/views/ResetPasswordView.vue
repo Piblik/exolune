@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
+import api from '../services/api'
 
 const route = useRoute()
 const router = useRouter()
@@ -26,25 +27,14 @@ const submitForm = async () => {
   isLoading.value = true
 
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/reset-password`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify({
-        token: token.value,
-        email: email.value,
-        password: password.value,
-        password_confirmation: passwordConfirmation.value,
-      }),
+    const response = await api.post('/api/reset-password', {
+      token: token.value,
+      email: email.value,
+      password: password.value,
+      password_confirmation: passwordConfirmation.value,
     })
 
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new Error(data.message || 'Не вдалося змінити пароль.')
-    }
+    const data = response.data
 
     message.value = data.message
 
