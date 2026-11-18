@@ -20,6 +20,12 @@ Route::get('/quests', [QuestController::class, 'index']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])
+    ->withoutMiddleware([EnsureFrontendRequestsAreStateful::class]);
+
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])
+    ->withoutMiddleware([EnsureFrontendRequestsAreStateful::class]);
+
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/user', [AuthController::class, 'me']);
@@ -46,4 +52,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
 
     Route::get('/streak', [StreakController::class, 'index']);
+
+    Route::post('/quests/{userQuestId}/steps/{stepId}/complete', [QuestController::class, 'completeStep']);
+
+    Route::post('/quests/custom', [QuestController::class, 'createCustom']);
 });

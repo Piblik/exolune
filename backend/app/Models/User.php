@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\ExperienceLog;
 use App\Models\UserAchievement;
 use App\Models\UserStreak;
+use Illuminate\Auth\Notifications\ResetPassword;
 
 class User extends Authenticatable
 {
@@ -75,5 +76,28 @@ class User extends Authenticatable
     public function streak(): HasOne
     {
         return $this->hasOne(UserStreak::class);
+    }
+
+    public function createdQuests(): HasMany
+    {
+        return $this->hasMany(Quest::class, 'created_by');
+    }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $url = config('app.frontend_url') . '/reset-password?token=' . $token
+            . '&email=' . urlencode($this->email);
+
+        $this->notify(new class($url) extends ResetPassword {
+            public function __construct(private string $resetUrl)
+            {
+                parent::__construct('');
+            }
+
+            protected function resetUrl($notifiable): string
+            {
+                return $this->resetUrl;
+            }
+        });
     }
 }

@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Quest extends Model
 {
     protected $fillable = [
+        'created_by',
         'title',
         'description',
         'category',
@@ -18,6 +20,7 @@ class Quest extends Model
         'discipline_reward',
         'is_active',
         'is_daily',
+        'is_weekly',
     ];
 
     protected function casts():array
@@ -29,11 +32,22 @@ class Quest extends Model
             'discipline_reward' => 'integer',
             'is_active' => 'boolean',
             'is_daily' => 'boolean',
+            'is_weekly' => 'boolean',
         ];
+    }
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function userQuests(): HasMany
     {
         return $this->hasMany(UserQuest::class);
+    }
+
+    public function steps(): HasMany
+    {
+        return $this->hasMany(QuestStep::class)->orderBy('sort_order');
     }
 }

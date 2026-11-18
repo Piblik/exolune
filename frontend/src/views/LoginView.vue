@@ -51,7 +51,7 @@ async function handleLogin() {
           required
         />
 
-        <label for="password">пароль</label>
+        <label for="password">Пароль</label>
         <input
           id="password"
           v-model="form.password"
@@ -60,6 +60,8 @@ async function handleLogin() {
           autocomplete="current-password"
           required
         />
+
+        <RouterLink to="/forgot-password" class="forgot-password-link"> Забули пароль? </RouterLink>
 
         <p v-if="errorMessage" class="error-message">
           {{ errorMessage }}
@@ -86,32 +88,36 @@ async function handleLogin() {
   align-items: center;
   padding: 24px;
   box-sizing: border-box;
-  background: #10111b;
-  color: #ffffff;
-  font-family: Arial, sans-serif;
+  background: #090d18;
+  color: #f5f2ff;
+  font-family: inherit;
 }
 
 .login-card {
   width: 100%;
   max-width: 420px;
   padding: 36px;
-  border: 1px solid #303248;
-  border-radius: 16px;
-  background: #191a29;
+  border: 1px solid #252d41;
+  border-radius: 15px;
+  background: #101625;
   box-sizing: border-box;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.2);
 }
 
 h1 {
   margin: 0;
   text-align: center;
   font-size: 32px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
   color: #a78bfa;
 }
 
 .subtitle {
   margin: 12px 0 28px;
   text-align: center;
-  color: #a1a1b5;
+  color: #929bb2;
+  font-size: 14px;
 }
 
 form {
@@ -122,44 +128,66 @@ form {
 
 label {
   margin-top: 8px;
-  font-size: 14px;
-  color: #d5d5e2;
+  font-size: 13px;
+  font-weight: 600;
+  color: #c5cbe0;
 }
 
 input {
   width: 100%;
   box-sizing: border-box;
-  padding: 13px;
-  border: 1px solid #393b52;
-  border-radius: 8px;
+  padding: 13px 14px;
+  border: 1px solid #303a52;
+  border-radius: 9px;
   outline: none;
-  background: #11121d;
-  color: white;
+  background: #0b1120;
+  color: #f5f2ff;
+  font-size: 14px;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+input::placeholder {
+  color: #68738d;
 }
 
 input:focus {
   border-color: #a78bfa;
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.12);
 }
 
 .error-message {
-  color: #ff7777;
-  font-size: 14px;
+  margin: 4px 0 0;
+  padding: 11px 13px;
+  border: 1px solid rgba(251, 113, 133, 0.25);
+  border-radius: 8px;
+  background: rgba(251, 113, 133, 0.08);
+  color: #fb7185;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 button {
   margin-top: 12px;
   padding: 14px;
-  border: none;
-  border-radius: 8px;
+  border: 1px solid transparent;
+  border-radius: 9px;
   background: #8b5cf6;
-  color: white;
+  color: #ffffff;
   font-size: 15px;
-  font-weight: bold;
+  font-weight: 700;
   cursor: pointer;
+  transition:
+    background 0.2s,
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
-button:hover {
+button:hover:not(:disabled) {
   background: #7c3aed;
+  box-shadow: 0 5px 18px rgba(139, 92, 246, 0.2);
+  transform: translateY(-1px);
 }
 
 button:disabled {
@@ -170,12 +198,55 @@ button:disabled {
 .register-link {
   margin-top: 24px;
   text-align: center;
-  color: #a1a1b5;
-  font-size: 14px;
+  color: #929bb2;
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 a {
   color: #a78bfa;
   text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: #c4a8ff;
+}
+
+.forgot-password-link {
+  align-self: flex-end;
+  margin-top: 2px;
+  font-size: 13px;
+  color: #a78bfa;
+  text-decoration: none;
+}
+
+.forgot-password-link:hover {
+  color: #c4a8ff;
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .login-page {
+    padding: 16px;
+  }
+
+  .login-card {
+    padding: 28px 22px;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 360px) {
+  .login-card {
+    padding: 24px 18px;
+  }
+
+  h1 {
+    font-size: 25px;
+  }
 }
 </style>

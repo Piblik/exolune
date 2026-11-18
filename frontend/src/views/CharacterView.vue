@@ -162,7 +162,8 @@ const stats = computed(() => {
 <style scoped>
 .character-page {
   min-height: calc(100vh - 66px);
-  padding: 28px clamp(16px, 3vw, 36px) 45px;
+  box-sizing: border-box;
+  padding: 32px;
   background: #090d18;
   color: #f5f2ff;
   font-family: Arial, sans-serif;
@@ -173,7 +174,7 @@ const stats = computed(() => {
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  margin-bottom: 25px;
+  margin-bottom: 26px;
 }
 
 .eyebrow {
@@ -185,26 +186,39 @@ const stats = computed(() => {
 
 .page-heading h1 {
   margin: 9px 0;
-  font-size: 27px;
+  font-size: 26px;
+  font-weight: 600;
 }
 
 .page-heading p {
   margin: 0;
   color: #929bb2;
   font-size: 12px;
+  line-height: 1.5;
 }
 
 .back-link {
-  padding: 10px 14px;
-  border: 1px solid #343044;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 9px 12px;
+  border: 1px solid #252d41;
   border-radius: 8px;
+  background: #101625;
   color: #c4a8ff;
   font-size: 11px;
   text-decoration: none;
+  transition: 0.2s ease;
 }
 
 .back-link:hover {
-  border-color: #8b5cf6;
+  background: #211b36;
+  border-color: #6541a5;
+}
+
+.back-link svg {
+  flex-shrink: 0;
 }
 
 .hero-card {
@@ -212,33 +226,40 @@ const stats = computed(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 245px;
+  min-height: 230px;
+  box-sizing: border-box;
   overflow: hidden;
-  padding: 30px;
+  padding: 28px;
   border: 1px solid #392b60;
-  border-radius: 16px;
-  background: radial-gradient(circle at 80% 50%, #302052 0%, #17152a 42%, #111525 100%);
+  border-radius: 14px;
+  background: radial-gradient(circle at 80% 50%, #302052 0%, #17152a 42%, #101625 100%);
 }
 
 .hero-content {
+  position: relative;
   z-index: 1;
   width: 65%;
+  min-width: 0;
 }
 
 .role-label {
   display: inline-block;
   padding: 6px 10px;
   border: 1px solid #493276;
-  border-radius: 5px;
-  background: #251b3e;
+  border-radius: 6px;
+  background: #211b36;
   color: #c4a8ff;
   font-size: 9px;
   font-weight: bold;
+  letter-spacing: 0.8px;
 }
 
 .hero-content h2 {
-  margin: 15px 0 5px;
-  font-size: 30px;
+  margin: 14px 0 5px;
+  color: #f5f2ff;
+  font-size: 27px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
 .hero-subtitle {
@@ -249,15 +270,16 @@ const stats = computed(() => {
 
 .xp-section {
   max-width: 480px;
-  margin-top: 28px;
+  margin-top: 25px;
 }
 
 .xp-label {
   display: flex;
   justify-content: space-between;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-bottom: 9px;
-  color: #a7a9bc;
+  color: #929bb2;
   font-size: 10px;
 }
 
@@ -269,20 +291,20 @@ const stats = computed(() => {
   height: 8px;
   overflow: hidden;
   border-radius: 10px;
-  background: #292d43;
+  background: #252d41;
 }
 
 .progress-fill {
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #7545d9, #b17aff);
+  background: linear-gradient(90deg, #8b5cf6, #c4a8ff);
   transition: width 0.3s ease;
 }
 
 .xp-section small {
   display: block;
   margin-top: 9px;
-  color: #9b8cbd;
+  color: #929bb2;
   font-size: 10px;
 }
 
@@ -293,15 +315,16 @@ const stats = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 155px;
-  height: 155px;
+  width: 145px;
+  height: 145px;
+  overflow: hidden;
   transform: translateY(-50%);
   border: 3px solid #8055bc;
   border-radius: 50%;
   background: linear-gradient(145deg, #b38be6, #492b76);
-  box-shadow: 0 0 45px #8b5cf666;
+  box-shadow: 0 0 40px #8b5cf655;
   color: white;
-  font-size: 65px;
+  font-size: 60px;
   font-weight: bold;
 }
 
@@ -314,8 +337,8 @@ const stats = computed(() => {
 
 .level-badge {
   position: absolute;
-  right: 25px;
-  bottom: 20px;
+  right: 22px;
+  bottom: 18px;
   display: grid;
   gap: 3px;
   text-align: center;
@@ -328,11 +351,12 @@ const stats = computed(() => {
 }
 
 .level-badge strong {
+  color: #f5f2ff;
   font-size: 20px;
 }
 
 .stats-section {
-  margin-top: 32px;
+  margin-top: 30px;
 }
 
 .section-heading {
@@ -340,12 +364,14 @@ const stats = computed(() => {
   align-items: flex-end;
   justify-content: space-between;
   gap: 15px;
-  margin-bottom: 17px;
+  margin-bottom: 16px;
 }
 
 .section-heading h2 {
   margin: 7px 0 0;
-  font-size: 18px;
+  color: #f5f2ff;
+  font-size: 17px;
+  font-weight: 600;
 }
 
 .stats-count {
@@ -361,10 +387,18 @@ const stats = computed(() => {
 
 .stat-card {
   min-width: 0;
-  padding: 20px;
+  padding: 18px;
   border: 1px solid #252d41;
   border-radius: 13px;
   background: #101625;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.stat-card:hover {
+  border-color: #49376c;
+  transform: translateY(-2px);
 }
 
 .stat-top {
@@ -378,12 +412,16 @@ const stats = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 43px;
-  height: 43px;
+  width: 42px;
+  height: 42px;
   border-radius: 11px;
   background: #211b36;
   color: #b18bff;
-  font-size: 22px;
+}
+
+.stat-icon svg {
+  flex-shrink: 0;
+  stroke-width: 1.8;
 }
 
 .stat-label {
@@ -393,13 +431,15 @@ const stats = computed(() => {
 }
 
 .stat-card h3 {
-  margin: 20px 0 7px;
-  color: #aab1c5;
+  margin: 18px 0 7px;
+  color: #aab2c8;
   font-size: 13px;
+  font-weight: 500;
 }
 
 .stat-value {
-  font-size: 32px;
+  color: #f5f2ff;
+  font-size: 30px;
 }
 
 .stat-card p {
@@ -422,21 +462,29 @@ const stats = computed(() => {
 .info-panel {
   display: flex;
   align-items: flex-start;
-  gap: 15px;
+  gap: 14px;
   margin-top: 20px;
-  padding: 20px;
-  border: 1px solid #343044;
+  padding: 18px;
+  border: 1px solid #252d41;
   border-radius: 13px;
   background: #101625;
 }
 
 .info-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
   color: #c4a8ff;
-  font-size: 25px;
+}
+
+.info-icon svg {
+  stroke-width: 1.8;
 }
 
 .info-panel h3 {
-  margin: 2px 0 8px;
+  margin: 2px 0 7px;
+  color: #f5f2ff;
   font-size: 13px;
 }
 
@@ -448,11 +496,16 @@ const stats = computed(() => {
 }
 
 .empty-state {
-  padding: 60px 20px;
+  padding: 45px 20px;
   border: 1px solid #252d41;
   border-radius: 13px;
   background: #101625;
   text-align: center;
+}
+
+.empty-state h2 {
+  color: #f5f2ff;
+  font-size: 17px;
 }
 
 .empty-state p {
@@ -467,19 +520,44 @@ const stats = computed(() => {
   text-decoration: none;
 }
 
+.empty-state a:hover {
+  color: #c4a8ff;
+}
+
+@media (max-width: 900px) {
+  .character-page {
+    padding: 24px;
+  }
+
+  .hero-avatar {
+    right: 12%;
+    width: 125px;
+    height: 125px;
+  }
+
+  .stats-grid {
+    gap: 12px;
+  }
+
+  .stat-card {
+    padding: 15px;
+  }
+}
+
 @media (max-width: 700px) {
   .page-heading {
     align-items: flex-start;
     flex-direction: column;
+    gap: 14px;
   }
 
   .hero-card {
-    min-height: 260px;
+    min-height: 250px;
     padding: 20px;
   }
 
   .hero-content {
-    width: 80%;
+    width: 85%;
   }
 
   .hero-content h2 {
@@ -487,45 +565,87 @@ const stats = computed(() => {
   }
 
   .hero-avatar {
-    right: -35px;
+    right: -30px;
     width: 125px;
     height: 125px;
-    opacity: 0.35;
+    opacity: 0.3;
+  }
+
+  .level-badge {
+    right: 16px;
+    bottom: 14px;
   }
 
   .stats-grid {
     grid-template-columns: 1fr;
   }
+}
 
-  .level-badge {
-    right: 18px;
-    bottom: 15px;
+@media (max-width: 600px) {
+  .character-page {
+    padding: 20px 14px 30px;
+  }
+
+  .page-heading h1 {
+    font-size: 22px;
+  }
+
+  .page-heading p {
+    font-size: 11px;
+  }
+
+  .hero-card {
+    min-height: 245px;
+    padding: 17px;
+  }
+
+  .hero-content {
+    width: 100%;
+  }
+
+  .hero-content h2 {
+    font-size: 21px;
+  }
+
+  .xp-section {
+    max-width: 100%;
+    margin-top: 22px;
+  }
+
+  .xp-label {
+    font-size: 9px;
+  }
+
+  .section-heading h2 {
+    font-size: 15px;
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+
+  .info-panel {
+    padding: 15px;
   }
 }
 
-.back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
+@media (max-width: 360px) {
+  .character-page {
+    padding: 16px 10px 25px;
+  }
 
-.back-link svg {
-  flex-shrink: 0;
-}
+  .hero-card {
+    padding: 14px;
+  }
 
-.stat-icon svg {
-  stroke-width: 1.8;
-  flex-shrink: 0;
-}
+  .hero-content h2 {
+    font-size: 19px;
+  }
 
-.info-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.info-icon svg {
-  stroke-width: 1.8;
+  .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 7px;
+  }
 }
 </style>

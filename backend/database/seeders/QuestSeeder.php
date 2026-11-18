@@ -19,6 +19,20 @@ class QuestSeeder extends Seeder
                 'strength_reward' => 8,
                 'intelligence_reward' => 0,
                 'discipline_reward' => 2,
+                'steps' => [
+                    [
+                        'title' => 'Підготуйся до тренування',
+                        'description' => 'Підготуй спортивний одяг та місце для тренування.',
+                    ],
+                    [
+                        'title' => 'Виконай розминку',
+                        'description' => 'Проведи 5–10 хвилин розминки.',
+                    ],
+                    [
+                        'title' => 'Проведи силове тренування',
+                        'description' => 'Тренуйся щонайменше 30 хвилин.',
+                    ],
+                ],
             ],
             [
                 'title' => 'Глибоке навчання',
@@ -29,6 +43,20 @@ class QuestSeeder extends Seeder
                 'strength_reward' => 0,
                 'intelligence_reward' => 12,
                 'discipline_reward' => 4,
+                'steps' => [
+                    [
+                        'title' => 'Обери тему',
+                        'description' => 'Визнач тему або завдання, над яким працюватимеш.',
+                    ],
+                    [
+                        'title' => 'Опрацюй матеріал',
+                        'description' => 'Присвяти навчанню щонайменше одну годину.',
+                    ],
+                    [
+                        'title' => 'Закріпи знання',
+                        'description' => 'Виконай практичне завдання або попрацюй над проєктом ще одну годину.',
+                    ],
+                ],
             ],
             [
                 'title' => 'Читацький ритуал',
@@ -39,6 +67,20 @@ class QuestSeeder extends Seeder
                 'strength_reward' => 0,
                 'intelligence_reward' => 5,
                 'discipline_reward' => 3,
+                'steps' => [
+                    [
+                        'title' => 'Обери книгу',
+                        'description' => 'Підготуй книгу, яку хочеш прочитати.',
+                    ],
+                    [
+                        'title' => 'Розпочни читання',
+                        'description' => 'Прочитай перші 10 сторінок.',
+                    ],
+                    [
+                        'title' => 'Заверши читання',
+                        'description' => 'Прочитай ще 10 сторінок або більше.',
+                    ],
+                ],
             ],
             [
                 'title' => 'Залізна дисципліна',
@@ -49,6 +91,20 @@ class QuestSeeder extends Seeder
                 'strength_reward' => 0,
                 'intelligence_reward' => 5,
                 'discipline_reward' => 15,
+                'steps' => [
+                    [
+                        'title' => 'Склади план',
+                        'description' => 'Визнач усі завдання, які необхідно виконати сьогодні.',
+                    ],
+                    [
+                        'title' => 'Виконай основні завдання',
+                        'description' => 'Виконай заплановані важливі справи.',
+                    ],
+                    [
+                        'title' => 'Перевір результати',
+                        'description' => 'Переконайся, що всі заплановані завдання виконані.',
+                    ],
+                ],
             ],
             [
                 'title' => 'Нові горизонти',
@@ -59,14 +115,48 @@ class QuestSeeder extends Seeder
                 'strength_reward' => 0,
                 'intelligence_reward' => 20,
                 'discipline_reward' => 10,
+                'steps' => [
+                    [
+                        'title' => 'Знайди нову тему',
+                        'description' => 'Обери тему, з якою раніше не працював.',
+                    ],
+                    [
+                        'title' => 'Досліди матеріал',
+                        'description' => 'Опрацюй навчальні матеріали та знайди корисні джерела.',
+                    ],
+                    [
+                        'title' => 'Створи конспект',
+                        'description' => 'Запиши основні поняття та висновки.',
+                    ],
+                    [
+                        'title' => 'Перевір знання',
+                        'description' => 'Спробуй пояснити вивчену тему власними словами.',
+                    ],
+                ],
             ],
         ];
 
-        foreach ($quests as $quest) {
-            Quest::updateOrCreate(
-                ['title' => $quest['title']],
-                array_merge($quest, ['is_active' => true])
+        foreach ($quests as $questData) {
+            $steps = $questData['steps'];
+
+            unset($questData['steps']);
+
+            $quest = Quest::updateOrCreate(
+                ['title' => $questData['title']],
+                array_merge($questData, [
+                    'is_active' => true,
+                ])
             );
+
+            foreach ($steps as $index => $stepData) {
+                $quest->steps()->updateOrCreate(
+                    ['sort_order' => $index + 1],
+                    [
+                        'title' => $stepData['title'],
+                        'description' => $stepData['description'],
+                    ]
+                );
+            }
         }
     }
 }

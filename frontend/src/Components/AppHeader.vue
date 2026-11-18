@@ -196,7 +196,7 @@ function notificationIcon(type: string): string {
   min-height: 66px;
   padding: 10px 24px;
   background: #090d18;
-  border-bottom: 1px solid #202638;
+  border-bottom: 1px solid #252d41;
   color: #f5f2ff;
   font-family: Arial, sans-serif;
 }
@@ -206,6 +206,7 @@ function notificationIcon(type: string): string {
   flex-direction: column;
   justify-content: center;
   gap: 5px;
+  min-width: 0;
 }
 
 .greeting h2 {
@@ -214,6 +215,7 @@ function notificationIcon(type: string): string {
   font-weight: 600;
   line-height: 1.3;
   letter-spacing: 0.1px;
+  overflow-wrap: anywhere;
 }
 
 .greeting p {
@@ -227,6 +229,7 @@ function notificationIcon(type: string): string {
   display: flex;
   align-items: center;
   gap: 9px;
+  flex-shrink: 0;
 }
 
 .header-icon {
@@ -234,26 +237,24 @@ function notificationIcon(type: string): string {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 29px;
-  height: 29px;
-  border: 1px solid #293147;
-  border-radius: 8px;
-  background: transparent;
+  width: 34px;
+  height: 34px;
+  border: 1px solid #252d41;
+  border-radius: 9px;
+  background: #101625;
   color: #aab2c8;
-  font-size: 19px;
 }
 
 .notification {
   cursor: pointer;
-  font-size: 15px;
   transition: 0.2s;
 }
 
 .notification:hover,
 .notification.active {
-  background: #1d1a35;
+  background: #211b36;
   border-color: #6541a5;
-  color: #c4b5fd;
+  color: #c4a8ff;
 }
 
 .notification-badge {
@@ -280,14 +281,16 @@ function notificationIcon(type: string): string {
 
 .notifications-dropdown {
   position: absolute;
-  top: 42px;
+  top: 44px;
   right: 0;
   z-index: 200;
+  display: flex;
+  flex-direction: column;
   width: 350px;
-  max-height: 460px;
+  max-height: min(460px, calc(100vh - 90px));
   overflow: hidden;
-  background: #111625;
-  border: 1px solid #30374d;
+  background: #101625;
+  border: 1px solid #252d41;
   border-radius: 12px;
   box-shadow: 0 12px 35px #0008;
 }
@@ -297,11 +300,12 @@ function notificationIcon(type: string): string {
   align-items: center;
   justify-content: space-between;
   padding: 15px;
-  border-bottom: 1px solid #293147;
+  border-bottom: 1px solid #252d41;
 }
 
 .notifications-header strong {
   display: block;
+  color: #f5f2ff;
   font-size: 13px;
 }
 
@@ -318,6 +322,7 @@ function notificationIcon(type: string): string {
   background: transparent;
   color: #929bb2;
   cursor: pointer;
+  transition: 0.2s;
 }
 
 .close-button {
@@ -326,7 +331,7 @@ function notificationIcon(type: string): string {
 
 .notifications-actions {
   padding: 9px 15px;
-  border-bottom: 1px solid #293147;
+  border-bottom: 1px solid #252d41;
   text-align: right;
 }
 
@@ -336,6 +341,11 @@ function notificationIcon(type: string): string {
   color: #a78bfa;
   font-size: 10px;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+.notifications-actions button:hover {
+  color: #c4a8ff;
 }
 
 .notifications-list {
@@ -348,7 +358,7 @@ function notificationIcon(type: string): string {
   align-items: flex-start;
   gap: 10px;
   padding: 13px;
-  border-bottom: 1px solid #252c3e;
+  border-bottom: 1px solid #252d41;
   cursor: pointer;
   transition: 0.2s;
 }
@@ -366,10 +376,10 @@ function notificationIcon(type: string): string {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 9px;
-  background: #292044;
+  background: #29213d;
   font-size: 16px;
 }
 
@@ -399,12 +409,13 @@ function notificationIcon(type: string): string {
 }
 
 .delete-button {
+  flex-shrink: 0;
   font-size: 18px;
 }
 
 .delete-button:hover,
 .close-button:hover {
-  color: #f87171;
+  color: #fb7185;
 }
 
 .empty-state {
@@ -428,19 +439,23 @@ function notificationIcon(type: string): string {
 }
 
 .error {
-  color: #f87171;
+  color: #fb7185;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 900px) {
   .app-header {
-    padding: 10px 12px;
+    padding: 10px 18px;
+  }
+}
+
+@media (max-width: 600px) {
+  .app-header {
+    min-height: 60px;
+    padding: 9px 12px;
   }
 
-  .notifications-dropdown {
-    position: fixed;
-    top: 75px;
-    right: 10px;
-    width: min(350px, calc(100vw - 20px));
+  .greeting {
+    gap: 3px;
   }
 
   .greeting h2 {
@@ -449,6 +464,33 @@ function notificationIcon(type: string): string {
 
   .greeting p {
     font-size: 9px;
+  }
+
+  .header-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .notifications-dropdown {
+    position: fixed;
+    top: 68px;
+    right: 10px;
+    width: min(350px, calc(100vw - 20px));
+    max-height: calc(100vh - 85px);
+  }
+}
+
+@media (max-width: 360px) {
+  .app-header {
+    padding: 8px;
+  }
+
+  .greeting h2 {
+    font-size: 12px;
+  }
+
+  .greeting p {
+    font-size: 8px;
   }
 }
 </style>

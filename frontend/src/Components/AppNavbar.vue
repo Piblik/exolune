@@ -44,7 +44,6 @@ const links = [
     </nav>
 
     <div class="sidebar-bottom">
-
       <div class="profile">
         <div class="avatar">
           <img
@@ -75,10 +74,11 @@ const links = [
   flex-direction: column;
   width: 186px;
   padding: 16px 11px;
-  background: #0d111e;
-  border-right: 1px solid #252a3b;
-  color: #e8e4f5;
+  background: #090d18;
+  border-right: 1px solid #252d41;
+  color: #f5f2ff;
   font-family: Arial, sans-serif;
+  transition: width 0.2s ease;
 }
 
 .logo {
@@ -90,6 +90,7 @@ const links = [
   text-decoration: none;
   font-size: 17px;
   font-weight: bold;
+  white-space: nowrap;
 }
 
 .logo small {
@@ -103,8 +104,9 @@ const links = [
   justify-content: center;
   width: 31px;
   height: 31px;
+  flex-shrink: 0;
   border-radius: 9px;
-  background: #8b5cf6;
+  background: linear-gradient(135deg, #8b5cf6, #6541a5);
   font-size: 17px;
 }
 
@@ -117,29 +119,34 @@ const links = [
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 34px;
+  min-height: 36px;
   padding: 8px 10px;
   border: 1px solid transparent;
-  border-radius: 8px;
-  color: #969bb0;
+  border-radius: 9px;
+  color: #929bb2;
   text-decoration: none;
   font-size: 12px;
-  transition: 0.2s;
+  transition: 0.2s ease;
 }
 
 .nav-link:hover {
-  color: #fff;
-  background: #171a2a;
+  color: #f5f2ff;
+  background: #151b2b;
+  border-color: #252d41;
 }
 
 .nav-link.active {
-  color: #c4b5fd;
-  background: #1d1a35;
+  color: #c4a8ff;
+  background: #211b36;
   border-color: #382c62;
 }
 
 .nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 16px;
+  flex-shrink: 0;
   text-align: center;
   font-size: 16px;
 }
@@ -153,16 +160,17 @@ const links = [
   align-items: center;
   gap: 9px;
   padding: 12px 3px 3px;
-  border-top: 1px solid #252a3b;
+  border-top: 1px solid #252d41;
 }
 
 .avatar {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   flex-shrink: 0;
+  overflow: hidden;
   border-radius: 50%;
   background: #6541a5;
   color: white;
@@ -187,10 +195,11 @@ const links = [
   color: #e8e4f5;
   font-size: 10px;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .profile-info small {
-  color: #9290aa;
+  color: #929bb2;
   font-size: 9px;
 }
 
@@ -205,15 +214,14 @@ const links = [
     padding: 3px 0 24px;
   }
 
-  .logo > span:last-child,
-  .nav-link:not(.active)::after,
-  .nav-link {
-    font-size: 0;
+  .logo > span:last-child {
+    display: none;
   }
 
   .nav-link {
     justify-content: center;
     padding: 10px 5px;
+    font-size: 0;
   }
 
   .nav-icon {
@@ -222,6 +230,21 @@ const links = [
 
   .profile {
     justify-content: center;
+  }
+
+  .profile-info {
+    display: none;
+  }
+}
+
+@media (max-width: 360px) {
+  .sidebar {
+    width: 54px;
+    padding: 10px 5px;
+  }
+
+  .nav-link {
+    padding: 9px 3px;
   }
 }
 </style>

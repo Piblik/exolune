@@ -488,6 +488,7 @@ function chooseCategory(value: string) {
   background: #090d18;
   color: #f5f2ff;
   font-family: Arial, sans-serif;
+  box-sizing: border-box;
 }
 
 .summary-grid {
@@ -502,10 +503,10 @@ function chooseCategory(value: string) {
   align-items: center;
   gap: 12px;
   min-width: 0;
-  padding: 13px 15px;
+  padding: 14px 15px;
   background: #101625;
-  border: 1px solid #20283b;
-  border-radius: 12px;
+  border: 1px solid #252d41;
+  border-radius: 13px;
 }
 
 .summary-icon {
@@ -524,7 +525,7 @@ function chooseCategory(value: string) {
 
 .summary-icon.purple {
   color: #a78bfa;
-  background: #211b39;
+  background: #211b36;
 }
 
 .summary-icon.teal {
@@ -533,7 +534,7 @@ function chooseCategory(value: string) {
 }
 
 .summary-icon.green {
-  color: #34d399;
+  color: #25c69a;
   background: #12302c;
 }
 
@@ -550,8 +551,8 @@ function chooseCategory(value: string) {
 }
 
 .summary-content strong {
-  font-size: 19px;
   color: #f5f2ff;
+  font-size: 19px;
 }
 
 .filters {
@@ -573,10 +574,11 @@ function chooseCategory(value: string) {
   border-radius: 9px;
   background: #101625;
   color: #8993aa;
+  box-sizing: border-box;
 }
 
 .search-box:focus-within {
-  border-color: #8055bc;
+  border-color: #8b5cf6;
 }
 
 .search-box input {
@@ -590,7 +592,7 @@ function chooseCategory(value: string) {
 }
 
 .search-box input::placeholder {
-  color: #68738b;
+  color: #737d96;
 }
 
 .filter-controls {
@@ -599,37 +601,11 @@ function chooseCategory(value: string) {
   gap: 8px;
 }
 
-.select-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  height: 38px;
-  padding: 0 10px;
-  border: 1px solid #252d41;
-  border-radius: 9px;
-  background: #101625;
-  color: #8993aa;
-}
-
-.select-wrapper select {
-  max-width: 125px;
-  border: none;
-  outline: none;
-  appearance: none;
-  background: transparent;
-  color: #c4cbe0;
-  font-size: 11px;
-  cursor: pointer;
-}
-
-.select-wrapper option {
-  background: #101625;
-  color: #f5f2ff;
-}
+/* Історія активності */
 
 .history-container {
   overflow: hidden;
-  border: 1px solid #20283b;
+  border: 1px solid #252d41;
   border-radius: 13px;
   background: #101625;
 }
@@ -644,7 +620,7 @@ function chooseCategory(value: string) {
   justify-content: space-between;
   min-height: 43px;
   border-bottom: 1px solid #252d41;
-  color: #8993aa;
+  color: #929bb2;
   font-size: 10px;
   font-weight: 600;
 }
@@ -656,14 +632,14 @@ function chooseCategory(value: string) {
 }
 
 .positive-xp {
-  color: #a78bfa;
-  background: #211b39;
+  color: #c4a8ff;
+  background: #211b36;
   border: 1px solid #38295c;
 }
 
 .negative-xp {
-  color: #fca5a5;
-  background: #351d2a;
+  color: #fb7185;
+  background: #281722;
   border: 1px solid #573044;
 }
 
@@ -699,9 +675,11 @@ function chooseCategory(value: string) {
   stroke-width: 1.9;
 }
 
-.icon-quests {
+.icon-quests,
+.icon-strength,
+.icon-other {
   color: #a78bfa;
-  background: #211b39;
+  background: #211b36;
   border-color: #38295c;
 }
 
@@ -711,12 +689,6 @@ function chooseCategory(value: string) {
   border-color: #554324;
 }
 
-.icon-strength {
-  color: #a78bfa;
-  background: #211b39;
-  border-color: #38295c;
-}
-
 .icon-intelligence {
   color: #2dd4bf;
   background: #102b30;
@@ -724,15 +696,9 @@ function chooseCategory(value: string) {
 }
 
 .icon-discipline {
-  color: #34d399;
+  color: #25c69a;
   background: #12302c;
   border-color: #195345;
-}
-
-.icon-other {
-  color: #a78bfa;
-  background: #211b39;
-  border-color: #38295c;
 }
 
 .activity-info {
@@ -768,151 +734,16 @@ function chooseCategory(value: string) {
 }
 
 .activity-rewards strong {
-  color: #a78bfa;
+  color: #c4a8ff;
   font-size: 11px;
 }
 
 .activity-rewards span {
-  color: #8290aa;
+  color: #929bb2;
   font-size: 9px;
 }
 
-.pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  margin-top: 13px;
-}
-
-.page-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 32px;
-  height: 32px;
-  padding: 0 8px;
-  border: 1px solid #252d41;
-  border-radius: 8px;
-  background: #101625;
-  color: #929bb2;
-  font-size: 11px;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.page-button:hover:not(:disabled) {
-  border-color: #8055bc;
-  color: #c4b5fd;
-}
-
-.page-button.active {
-  border-color: #8b5cf6;
-  background: #8b5cf6;
-  color: white;
-}
-
-.page-button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.page-dots {
-  padding: 0 3px;
-  color: #929bb2;
-  font-size: 11px;
-}
-
-.message,
-.error-message {
-  padding: 30px;
-  border: 1px solid #252d41;
-  border-radius: 12px;
-  background: #101625;
-  color: #929bb2;
-  font-size: 12px;
-  text-align: center;
-}
-
-.error-message {
-  color: #fca5a5;
-}
-
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 55px 20px;
-  border: 1px solid #252d41;
-  border-radius: 12px;
-  background: #101625;
-  text-align: center;
-}
-
-.empty-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 60px;
-  height: 60px;
-  margin-bottom: 15px;
-  border-radius: 15px;
-  background: #211b39;
-  color: #a78bfa;
-}
-
-.empty-state h2 {
-  margin: 0 0 8px;
-  font-size: 17px;
-}
-
-.empty-state p {
-  margin: 0;
-  color: #929bb2;
-  font-size: 12px;
-}
-
-@media (max-width: 700px) {
-  .summary-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .filters {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .search-box {
-    width: auto;
-  }
-
-  .filter-controls {
-    flex-wrap: wrap;
-  }
-
-  .history-group {
-    padding: 0 10px;
-  }
-
-  .history-row {
-    gap: 9px;
-  }
-
-  .activity-icon {
-    width: 34px;
-    height: 34px;
-  }
-
-  .activity-info h3 {
-    font-size: 11px;
-  }
-
-  .activity-rewards strong {
-    font-size: 10px;
-  }
-}
-
-/* Кастомні випадаючі меню */
+/* Випадаючі меню */
 
 .custom-dropdown {
   position: relative;
@@ -946,8 +777,8 @@ function chooseCategory(value: string) {
 }
 
 .custom-dropdown[open] summary {
-  border-color: #8055bc;
-  color: #c4b5fd;
+  border-color: #8b5cf6;
+  color: #c4a8ff;
   background: #17152a;
 }
 
@@ -966,6 +797,7 @@ function chooseCategory(value: string) {
   z-index: 20;
   min-width: 100%;
   width: max-content;
+  max-width: min(240px, 85vw);
   padding: 5px;
   border: 1px solid #34304b;
   border-radius: 10px;
@@ -999,12 +831,113 @@ function chooseCategory(value: string) {
 }
 
 .dropdown-menu button.selected {
-  background: #29203e;
+  background: #29213d;
   color: #c4a8ff;
 }
 
 .dropdown-menu button.selected svg {
   color: #a78bfa;
+}
+
+/* Пагінація */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 15px;
+}
+
+.page-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid #252d41;
+  border-radius: 8px;
+  background: #101625;
+  color: #929bb2;
+  font-size: 11px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.page-button:hover:not(:disabled) {
+  border-color: #8b5cf6;
+  color: #c4a8ff;
+}
+
+.page-button.active {
+  border-color: #8b5cf6;
+  background: #8b5cf6;
+  color: white;
+}
+
+.page-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.page-dots {
+  padding: 0 3px;
+  color: #929bb2;
+  font-size: 11px;
+}
+
+/* Стани завантаження та порожньої історії */
+
+.message,
+.error-message {
+  padding: 30px;
+  border: 1px solid #252d41;
+  border-radius: 12px;
+  background: #101625;
+  color: #929bb2;
+  font-size: 12px;
+  text-align: center;
+}
+
+.error-message {
+  color: #fb7185;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 55px 20px;
+  border: 1px solid #252d41;
+  border-radius: 13px;
+  background: #101625;
+  text-align: center;
+}
+
+.empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  margin-bottom: 15px;
+  border-radius: 15px;
+  background: #211b36;
+  color: #a78bfa;
+}
+
+.empty-state h2 {
+  margin: 0 0 8px;
+  color: #f5f2ff;
+  font-size: 17px;
+}
+
+.empty-state p {
+  margin: 0;
+  color: #929bb2;
+  font-size: 12px;
+  line-height: 1.6;
 }
 
 @keyframes dropdown-appear {
@@ -1019,4 +952,128 @@ function chooseCategory(value: string) {
   }
 }
 
+/* Планшети */
+
+@media (max-width: 900px) {
+  .summary-card {
+    padding: 12px;
+  }
+
+  .summary-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .summary-content strong {
+    font-size: 17px;
+  }
+
+  .filters {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .search-box {
+    width: 100%;
+  }
+
+  .filter-controls {
+    justify-content: flex-start;
+  }
+}
+
+/* Телефони */
+
+@media (max-width: 600px) {
+  .history-page {
+    padding: 22px 14px 35px;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .summary-card {
+    padding: 12px 14px;
+  }
+
+  .summary-content strong {
+    font-size: 17px;
+  }
+
+  .filter-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .custom-dropdown {
+    min-width: 0;
+  }
+
+  .custom-dropdown summary {
+    gap: 6px;
+    padding: 0 8px;
+    font-size: 10px;
+  }
+
+  .history-group {
+    padding: 0 10px;
+  }
+
+  .history-row {
+    gap: 9px;
+    padding: 9px 0;
+  }
+
+  .activity-icon {
+    width: 33px;
+    height: 33px;
+  }
+
+  .activity-info h3 {
+    font-size: 11px;
+  }
+
+  .activity-info span {
+    font-size: 9px;
+  }
+
+  .activity-rewards strong {
+    font-size: 10px;
+  }
+
+  .activity-rewards span {
+    font-size: 8px;
+  }
+
+  .empty-state {
+    padding: 40px 16px;
+  }
+}
+
+@media (max-width: 380px) {
+  .history-page {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .activity-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .activity-rewards {
+    max-width: 95px;
+  }
+
+  .activity-info h3 {
+    white-space: normal;
+  }
+
+  .custom-dropdown summary {
+    font-size: 9px;
+  }
+}
 </style>

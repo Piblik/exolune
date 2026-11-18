@@ -12,6 +12,24 @@ export interface Quest {
   discipline_reward: number
   is_active: boolean
   is_daily: boolean
+  is_weekly: boolean
+  created_by?: number | null
+  steps?: QuestStep[]
+}
+
+export interface QuestStep {
+  id: number
+  title: string
+  description: string | null
+  sort_order: number
+}
+
+export interface UserQuestStep {
+  id: number
+  user_quest_id: number
+  quest_step_id: number
+  completed_at: string | null
+  quest_step?: QuestStep
 }
 
 export interface UserQuest {
@@ -23,40 +41,63 @@ export interface UserQuest {
   started_at: string
   completed_at: string | null
   quest: Quest
+  steps?: UserQuestStep[]
 }
 
-interface QuestsResponse {
-  success: boolean
-  quests: Quest[]
+export interface CreateQuestStep {
+  title: string
+  description?: string
 }
 
-interface UserQuestsResponse {
-  success: boolean
-  data: UserQuest[]
+export interface CreateQuestData {
+  title: string
+  description: string
+  category: string
+  difficulty: 'easy' | 'medium' | 'hard' | 'epic'
+  steps: CreateQuestStep[]
+}
+
+interface QuestActionResponse {
+  message: string
+  user_quest: UserQuest
 }
 
 export const questService = {
   async getQuests(): Promise<Quest[]> {
-    const response = await api.get<QuestsResponse>('/api/quests')
-    return response.data.quests
+    const response = await api.get<Quest[]>('/api/quests')
+    return response.data
   },
 
   async getMyQuests(): Promise<UserQuest[]> {
-    const response = await api.get<UserQuestsResponse>('/api/my-quests')
-    return response.data.data
+    const response = await api.get<UserQuest[]>('/api/my-quests')
+    return response.data
   },
 
   async acceptQuest(questId: number): Promise<UserQuest> {
-    const response = await api.post<{ data: UserQuest }>('/api/quests/accept', {
+    const response = await api.post<QuestActionResponse>('/api/quests/accept', {
       quest_id: questId,
     })
 
-    return response.data.data
+    return response.data.user_quest
   },
 
   async completeQuest(userQuestId: number): Promise<UserQuest> {
-    const response = await api.post<{ data: UserQuest }>(`/api/quests/${userQuestId}/complete`)
+    const response = await api.post<QuestActionResponse>(`/api/quests/${userQuestId}/complete`)
 
-    return response.data.data
+    return response.data.user_quest
+  },
+
+  async createQuest(data: CreateQuestData): Promise<UserQuest> {
+    const response = await api.post<QuestActionResponse>('/api/quests/custom', data)
+
+    return response.data.user_quest
+  },
+
+  async completeStep(userQuestId: number, stepId: number): Promise<UserQuest> {
+    const response = await api.post<{ message: string; user_quest: UserQuest }>(
+      `/api/quests/${userQuestId}/steps/${stepId}/complete`,
+    )
+
+    return response.data.user_quest
   },
 }

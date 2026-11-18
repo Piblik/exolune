@@ -129,7 +129,7 @@ function getSourceName(source: string) {
 async function handleLogout() {
   try {
     await authStore.logout()
-    await router.push({ name: 'login' })
+    await router.push({ name: 'home' })
   } catch {
     alert('Не вдалося вийти з акаунта. Спробуй ще раз.')
   }
