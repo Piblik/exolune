@@ -26,7 +26,7 @@ const submitForm = async () => {
   isLoading.value = true
 
   try {
-    const response = await fetch('http://localhost:8000/api/reset-password', {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/reset-password`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
